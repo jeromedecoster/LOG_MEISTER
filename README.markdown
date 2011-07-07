@@ -1,6 +1,6 @@
-Based on my favorite as3 logger: LogMeister
+Based on my favorite as3 logger:
 
-[base42 / LogMeister](https://github.com/base42/LogMeister)
+* [base42 / LogMeister](https://github.com/base42/LogMeister)
 
 Fork to suit my needs:
 
