@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="support-fail-if-empty">
+	
+	<!--
+	
+	Required in parent build file :
+	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${basedir}/build/libs/ant-contrib-1.0b3.jar"/>
+	
+	-->
+	
+	<macrodef name="support-fail-if-empty">
+		
+		<!-- required attributes -->
+		<attribute name="var"		default=""/>
+		<attribute name="message"	default=""/>
+		
+		<sequential>
+			
+			<if>
+				<equals arg1="@{var}" arg2=""/>
+				<then>
+					<fail message="@{message}"/>
+				</then>
+			</if>
+			
+		</sequential>
+	</macrodef>
+	
+</project>
+
+
+
+
+
+

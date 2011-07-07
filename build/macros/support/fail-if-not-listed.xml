@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="support-fail-if-not-listed">
+	
+	<!--
+	
+	Required in parent build file :
+	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${basedir}/build/libs/ant-contrib-1.0b3.jar"/>
+	
+	-->
+	
+	<macrodef name="support-fail-if-not-listed">
+		
+		<!-- required attributes -->
+		<attribute name="var"		default=""/>
+		<attribute name="list"		default=""/>
+		<attribute name="message"	default=""/>
+		
+		<sequential>
+			
+			<var name="found" value="false"/>
+		
+			<for trim="true" list="@{list}" param="e">
+				<sequential>
+					<if>
+						<equals arg1="@{e}" arg2="@{var}"/>
+						<then>
+							<var name="found" value="true"/>
+						</then>
+					</if>
+				</sequential>
+			</for>
+			
+			<if>
+				<equals arg1="${found}" arg2="false"/>
+				<then>
+					<fail message="@{message}"/>
+				</then>
+			</if>
+			
+		</sequential>
+	</macrodef>
+	
+</project>
+
+
+
+
+
+

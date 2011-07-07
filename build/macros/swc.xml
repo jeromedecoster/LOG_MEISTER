@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="macro-swc">
+
+<!--
+
+Required in parent build file :
+<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${basedir}/build/libs/ant-contrib-1.0b3.jar"/>
+
+-->
+
+<macrodef name="macro-swc">
+   
+   <!-- required attributes -->
+   <attribute name="sources"  default=""/>
+   <attribute name="output"   default=""/>
+   <attribute name="with"     default=""/>
+   
+   <!-- optional attributes -->
+   <attribute name="debug"             default="false"/>
+   <attribute name="library"           default=""/>
+   <attribute name="external-library"  default=""/>
+   <attribute name="metadata"          default=""/>
+   <attribute name="report"            default=""/>
+   <attribute name="clean-report"      default="false"/>
+   <attribute name="load-externs"      default=""/>
+   <attribute name="player"            default="${project.target-player}"/>
+   <attribute name="simple"            default="false"/>
+      
+   <sequential>
+      
+      <!-- check attributes -->
+      <support-fail-if-empty var="@{sources}"   message="Attribute 'sources' required"/>
+      <support-fail-if-empty var="@{with}"      message="Attribute 'with' required"/>
+      <support-fail-if-empty var="@{output}"    message="Attribute 'output' required"/>
+      
+      <support-fail-if-not-listed var="@{with}"
+                                  list="compc,fdt"
+                                  message=">Attribute 'with' must be 'compc' or 'fdt'"/>
+      
+      <!-- @{debug} must be 'true' or 'false', default false -->
+      <var name="debug" value="@{debug}"/>
+      <if>
+         <or>
+            <equals arg1="@{debug}" arg2="true" />
+            <equals arg1="@{debug}" arg2="false" />
+         </or>
+         <else>
+            <var name="debug" value="false"/>
+         </else>
+      </if>
+      
+      <if>
+         <and>
+            <equals arg1="@{with}"  arg2="fdt" />
+            <equals arg1="${debug}" arg2="true" />
+         </and>
+         <then>
+            <var name="debug" value="false"/>
+            <echo>INFO: compile with 'fdt' force debug to 'false'</echo>
+         </then>
+      </if>
+      
+      <!-- create var ${temp-report} -->
+      <path id="temp-report">
+         <pathelement location="@{output}"/>
+      </path>
+      <pathconvert targetos="${targetos}" property="temp-report" refid="temp-report">
+         <mapper>
+            <globmapper from="*.swc" to="*-temp.xml"/>
+         </mapper>
+      </pathconvert>
+      
+      
+      <var name="line" value=" "/>
+      
+      <!-- concat line if -->
+      <support-concat-line var="@{library}"           concat="-library-path+=@{library}"/>
+      <support-concat-line var="@{external-library}"  concat="-external-library-path+=@{external-library}"/>
+      <support-concat-line var="@{metadata}"          concat="-keep-as3-metadata+=@{metadata}"/>
+      <support-concat-line var="@{load-externs}"      concat="-load-externs=@{load-externs}"/>
+      <support-concat-line var="@{sources}"           concat="-include-sources=@{sources}"/>
+      <support-concat-line var="@{player}"            concat="-target-player=@{player}"/>
+      
+      <!-- concat line -->
+      <var name="line" value="${line} -actionscript-file-encoding=UTF-8"/>
+      <var name="line" value="${line} -optimize=true"/>
+      <var name="line" value="${line} -static-link-runtime-shared-libraries=true"/>
+      <var name="line" value="${line} -headless-server=false"/>
+      <var name="line" value="${line} -debug=${debug}"/>
+      <var name="line" value="${line} -verbose-stacktraces=${debug}"/>
+      
+      <if>
+         <equals arg1="@{with}" arg2="compc"/>
+         <then>
+            <var name="line" value="${line} -output=@{output}"/>
+         </then>
+      </if>
+      
+      <!--
+      <echo>with:@{with}</echo>
+      <echo>line:${line}</echo>
+      <echo>debug:${debug}</echo>
+      <echo>temp-report:${temp-report}</echo>
+      <echo>player:@{player}</echo>
+      -->
+      
+      
+      
+      <if>
+         <equals arg1="@{simple}" arg2="true"/>
+         <then>
+            
+            <support-library with="@{with}"
+                             output="@{output}"
+                             line="${line}"/> 
+            
+         </then>
+         <else>
+            
+            <support-library with="@{with}"
+                             output="@{output}"
+                             line="${line} -link-report=${temp-report}"/>
+            
+            <!-- split report -->
+            <if>
+               <equals arg1="${targetos}" arg2="unix" />
+               <then>
+                  <exec executable="rake" failonerror="true">
+                     <arg value="file=${temp-report}"/>
+                     <arg value="split_report"/>
+                  </exec>
+               </then>
+               <else>
+                  <exec executable="cmd">
+                    <arg line="/c rake file=${temp-report} split_report"/>
+                  </exec>
+               </else>
+            </if>
+            
+            
+            <!-- create SWC without the document class -->
+            <support-library with="@{with}"
+                             output="@{output}"
+                             line="${line} -link-report=${temp-report} -load-externs=${temp-report}.exc"/>
+            
+   
+            <!-- finalize report -->
+            <if>
+               <equals arg1="${targetos}" arg2="unix" />
+               <then>
+                  <exec executable="rake" failonerror="true">
+                     <arg value="file=${temp-report}"/>
+                     <arg value="clean=@{clean-report}"/>
+                     <arg value="report=@{report}"/>
+                     <arg value="finalize_report"/>
+                  </exec>
+               </then>
+               <else>
+                  <exec executable="cmd">
+                    <arg line="/c rake file=${temp-report} clean=@{clean-report} report=@{report} finalize_report"/>
+                  </exec>
+               </else>
+            </if>
+      
+
+         </else>
+      </if>
+      <!--
+      <unzip src="@{output}" dest="${libs.dir}"/>
+      -->
+      
+      <!-- 
+      To use it:
+      Run / External Tools / External Tools Configuraions / JRE tab
+      Select: Run in the same JRE as the workspace
+      -->
+      <eclipse.refreshLocal resource="${libs.dir}" depth="infinite"/>
+      
+   </sequential>
+</macrodef>
+</project>

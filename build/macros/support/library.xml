@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="support-library">
+	
+	<!--
+	
+	Required in parent build file :
+	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${basedir}/build/libs/ant-contrib-1.0b3.jar"/>
+	
+	Variable ${flex.compc.jar} ${flex.dir} ${targetos} ${basedir}
+	
+	-->
+	
+	<macrodef name="support-library">
+		
+		<!-- required attributes -->
+		<attribute name="with" default=""/>
+		<attribute name="line" default=""/>
+		
+		<!-- required attributes if @with == 'fdt' -->
+		<attribute name="output" default=""/>
+		
+		<sequential>
+			
+			<!--
+			<echo>fdt line:@{line}</echo>
+			-->
+			
+			<if>
+				<equals arg1="@{with}" arg2="compc"/>
+				<then>
+					
+					<java jar="${flex.compc.jar}" dir="${flex.dir}/frameworks" fork="true" failonerror="true">
+						<arg line="@{line}"/>
+					</java>
+
+				</then>
+				<else>
+					
+					<!-- get the last folder name in ${basedir} -->
+					<pathconvert targetos="${targetos}" property="projectname">
+						<path path="${basedir}"/>
+						<mapper>
+							<flattenmapper/>
+						</mapper>
+					</pathconvert>
+					
+					<!--
+					-->
+					<fdt.launch.resetFlexCompiler/>
+					
+					<fdt.launch.library	projectname="${projectname}"
+										target="@{output}"
+										compilerarguments="@{line}"
+										debug="false"
+										autoaddclasspath="false"
+										autoaddswcs="false"/>
+				</else>
+			</if>
+			
+		</sequential>
+	</macrodef>
+	
+</project>
+
+
+
+
+
+

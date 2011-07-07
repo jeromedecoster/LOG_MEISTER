@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="support-concat-line">
+	
+	<!--
+	
+	Required in parent build file :
+	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${basedir}/build/libs/ant-contrib-1.0b3.jar"/>
+	
+	Variable ${line}
+	
+	-->
+	
+	<macrodef name="support-concat-line">
+		
+		<!-- required attributes -->
+		<attribute name="concat"	default=""/>
+		<attribute name="var"		default=""/>
+		
+		<sequential>
+			
+			<if>
+				<equals arg1="@{var}" arg2=""/>
+				<else>
+					<var name="line" value="${line} @{concat}"/>
+				</else>
+			</if>
+			
+		</sequential>
+	</macrodef>
+	
+</project>
+
+
+
+
+
+

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="macro-swf">
+	
+	<!--
+	
+	Required in parent build file :
+	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${basedir}/build/libs/ant-contrib-1.0b3.jar"/>
+	
+	-->
+	
+	<macrodef name="macro-swf">
+		
+		<!-- required attributes -->
+		<attribute name="class"		default=""/>
+		<attribute name="source"	default=""/>
+		<attribute name="output"	default=""/>
+		<attribute name="with"		default=""/>
+		
+		<!-- optional attributes -->
+		<attribute name="debug"				default="false"/>
+		<attribute name="library"			default=""/>
+		<attribute name="external-library"	default=""/>
+		<attribute name="metadata"			default=""/>
+		<attribute name="report"			default=""/>
+		<attribute name="clean-report"		default="false"/>
+		<attribute name="load-externs"		default=""/>
+		<attribute name="width"				default="550"/>
+		<attribute name="height"			default="400"/>
+		<attribute name="player"			default="${project.target-player}"/>
+		<attribute name="reset"				default="false"/>
+		<attribute name="optimize"			default="true"/>
+			
+		<sequential>
+			
+			<!-- check attributes -->
+			<support-fail-if-empty var="@{class}"	message="Attribute 'class' required"/>
+			
+			<support-fail-if-empty var="@{source}"	message="Attribute 'source' required"/>
+			
+			<support-fail-if-empty var="@{with}"	message="Attribute 'with' required"/>
+			
+			<support-fail-if-empty var="@{output}"	message="Attribute 'output' required"/>
+			
+			<support-fail-if-not-listed var="@{with}"
+										list="mxmlc,fdt"
+										message=">Attribute 'with' must be 'mxmlc' or 'fdt'"/>
+			
+			
+			<!-- @{debug} must be 'true' or 'false', default false -->
+			<var name="debug" value="@{debug}"/>
+			<if>
+				<or>
+					<equals arg1="@{debug}" arg2="true" />
+					<equals arg1="@{debug}" arg2="false" />
+				</or>
+				<else>
+					<var name="debug" value="false"/>
+				</else>
+			</if>
+			
+			<if>
+				<and>
+					<equals arg1="@{with}"	arg2="fdt" />
+					<equals arg1="${debug}"	arg2="true" />
+				</and>
+				<then>
+					<var name="debug" value="false"/>
+					<echo>INFO: compile with 'fdt' force debug to 'false'</echo>
+				</then>
+			</if>
+			
+			
+			<var name="width"	value="@{width}"/>
+			<var name="height"	value="@{height}"/>
+			<support-prevent-empty-size/>
+			
+			
+			<var name="line" value=" "/>
+			
+			<!-- concat line if -->
+			<support-concat-line var="@{library}"			concat="-library-path+=@{library}"/>
+			<support-concat-line var="@{external-library}"	concat="-external-library-path+=@{external-library}"/>
+			<support-concat-line var="@{metadata}"			concat="-keep-as3-metadata+=@{metadata}"/>
+			<support-concat-line var="@{report}"			concat="-link-report=@{report}"/>
+			<support-concat-line var="@{load-externs}"		concat="-load-externs=@{load-externs}"/>
+			<support-concat-line var="@{player}"			concat="-target-player=@{player}"/>
+			
+			<!-- concat line -->
+			<var name="line" value="${line} -source-path=@{source}"/>
+			<var name="line" value="${line} -default-size=${width},${height}"/>
+			<var name="line" value="${line} -actionscript-file-encoding=UTF-8"/>
+			<var name="line" value="${line} -optimize=true"/>
+			<var name="line" value="${line} -static-link-runtime-shared-libraries=true"/>
+			<var name="line" value="${line} -headless-server=false"/>
+			<var name="line" value="${line} -debug=${debug}"/>
+			<var name="line" value="${line} -verbose-stacktraces=${debug}"/>
+			
+			
+			<!--
+			<echo>line:${line}</echo>
+			<echo>debug:${debug}</echo>
+			<echo>player:@{player}</echo>
+			-->
+			
+			
+			<if>
+				<equals arg1="@{with}" arg2="mxmlc"/>
+				<then>
+					
+					<java jar="${flex.mxmlc.jar}" dir="${flex.dir}/frameworks" fork="true" failonerror="true">
+						<arg line="-file-specs=@{class}"/>
+						<arg line="-output=@{output}"/>
+						<arg line="${line}"/>
+					</java>
+					
+				</then>
+				<else>
+					
+					<!-- get the last folder name in ${basedir} -->
+					<pathconvert targetos="${targetos}" property="projectname">
+						<path path="${basedir}"/>
+						<mapper>
+							<flattenmapper/>
+						</mapper>
+					</pathconvert>
+					
+					<!-- reset the compiler if asked or release mode -->
+					<if>
+						<or>
+							<equals arg1="@{reset}" arg2="true"/>
+							<equals arg1="${debug}" arg2="false"/>
+						</or>
+						<then>
+							<echo message="fdt.launch.resetFlexCompiler"/>
+							<fdt.launch.resetFlexCompiler/>
+						</then>
+					</if>
+					
+					<fdt.launch.application	projectname="${projectname}"
+											mainclass="@{class}"
+											target="@{output}"
+											debug="${debug}"
+											compilerarguments="${line}"
+											autoaddclasspath="false"
+											autoaddswcs="false"/>
+				</else>
+			</if>
+			
+			<!-- optimizer -->
+			<if>
+				<and>
+					<equals arg1="@{optimize}"	arg2="true"/>
+					<equals arg1="${debug}"		arg2="false"/>
+				</and>
+				<then>
+					<echo message="INFO: optimizer.jar"/>
+					<java jar="${flex.dir}/lib/optimizer.jar" fork="true" failonerror="true">
+						<jvmarg line="-ea -DAS3 -DAVMPLUS -Dflexlib=${flex.dir}/frameworks -Xms32m -Xmx384m -Dsun.io.useCanonCaches=false" />
+						<arg	line="'@{output}' --output '@{output}' " />
+					</java>
+				</then>
+			</if>
+			
+			<!-- clean report -->
+			<if>
+				<and>
+					<not>
+						<equals arg1="@{report}" arg2=""/>
+					</not>
+					<equals arg1="@{clean-report}" arg2="true"/>
+				</and>
+				<then>
+					<exec executable="rake" failonerror="true">
+						<arg value="file=@{report}"/>
+						<arg value="clean_report"/>
+					</exec>
+				</then>
+			</if>
+			
+			<!-- 
+			To use it:
+			Run / External Tools / External Tools Configuraions / JRE tab
+			Select: Run in the same JRE as the workspace
+			-->
+			<eclipse.refreshLocal resource="${bin.dir}" depth="infinite"/>
+			
+		</sequential>
+	</macrodef>
+	
+</project>
+
+
+
+
+
+

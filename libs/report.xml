@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datas>
+  <def id="com.demonsters.debugger:IMonsterDebuggerConnection"/>
+  <def id="com.demonsters.debugger:MonsterDebugger"/>
+  <def id="com.demonsters.debugger:MonsterDebuggerConnection"/>
+  <def id="com.demonsters.debugger:MonsterDebuggerConnectionDefault"/>
+  <def id="com.demonsters.debugger:MonsterDebuggerConstants"/>
+  <def id="com.demonsters.debugger:MonsterDebuggerCore"/>
+  <def id="com.demonsters.debugger:MonsterDebuggerData"/>
+  <def id="com.demonsters.debugger:MonsterDebuggerDescribeType"/>
+  <def id="com.demonsters.debugger:MonsterDebuggerPlugin"/>
+  <def id="com.demonsters.debugger:MonsterDebuggerUtils"/>
+  <def id="com.jeromedecoster.logging.logmeister.connectors.enums:Connector"/>
+  <def id="com.jeromedecoster.logging.logmeister.connectors.enums:Level"/>
+  <def id="com.jeromedecoster.logging.logmeister.connectors.vo:Sender"/>
+  <def id="com.jeromedecoster.logging.logmeister.connectors:AbstractConnector"/>
+  <def id="com.jeromedecoster.logging.logmeister.connectors:ConsoleConnector"/>
+  <def id="com.jeromedecoster.logging.logmeister.connectors:FirebugConnector"/>
+  <def id="com.jeromedecoster.logging.logmeister.connectors:ILogMeisterConnector"/>
+  <def id="com.jeromedecoster.logging.logmeister.connectors:MonsterDebuggerConnector"/>
+  <def id="com.jeromedecoster.logging.logmeister.connectors:SosMaxConnector"/>
+  <def id="com.jeromedecoster.logging.logmeister:LogMeister"/>
+  <def id="com.jeromedecoster.logging.logmeister:NSLogMeister"/>
+  <def id="com.jeromedecoster.logging:debug"/>
+  <def id="com.jeromedecoster.logging:error"/>
+  <def id="com.jeromedecoster.logging:info"/>
+  <def id="com.jeromedecoster.logging:warn"/>
+</datas>

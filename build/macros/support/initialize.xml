@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="support-initialize">
+	
+	<!--
+	
+	Required in parent build file :
+	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${basedir}/build/libs/ant-contrib-1.0b3.jar"/>
+	
+	-->
+	
+	<macrodef name="support-initialize">
+
+		<sequential>
+			
+			<!--
+			Windows
+			=======
+			env.COMPUTERNAME	JDE2
+			env.HOMEDRIVE		C:
+			env.OS				Windows_NT
+			env.SystemDrive		C:
+			env.SystemRoot		C:\WINDOWS
+			env.USERNAME		JER
+			env.USERDOMAIN		JDE2
+			
+			OSX
+			===
+			env.HOME			/Users/user
+			env.LOGNAME			decosterj
+			env.USER			decosterj
+			-->
+			<property environment="env"/>
+			
+			
+			<!--
+			Set property ${targetos} to 'windows' or 'unix'
+			-->
+			<condition property="targetos" value="windows">
+				<os family="windows"/>
+			</condition>
+			
+			<condition property="targetos" value="unix">
+				<os family="mac"/>
+			</condition>
+			
+			
+			<!--
+			Load OS config
+			- if Windows: 	/build/build.windows.properties
+			- if Mac: 		/build/build.unix.properties
+			-->
+			<property file="${basedir}/build/build.${targetos}.properties" />
+			
+			
+			<!--
+			Load project config
+			-->
+			<property file="${basedir}/build/build.properties"/>
+			
+			
+			<!--
+			Setup ant-contrib
+			-->
+			<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${basedir}/build/libs/ant-contrib-1.0b3.jar"/>
+			
+			
+			<!--
+			Import common macros
+			-->
+			<import file="${build.dir}/macros/support/browser.xml"/>
+			<import file="${build.dir}/macros/support/fail-if-empty.xml"/>
+			<import file="${build.dir}/macros/support/fail-if-not-listed.xml"/>
+			<import file="${build.dir}/macros/support/concat-line.xml"/>
+			<import file="${build.dir}/macros/support/prevent-empty-size.xml"/>
+			<import file="${build.dir}/macros/support/library.xml"/>
+			
+			<import file="${build.dir}/macros/launch.xml"/>
+			<import file="${build.dir}/macros/swf.xml"/>
+			<import file="${build.dir}/macros/swc.xml"/>
+			<import file="${build.dir}/macros/asdoc.xml"/>
+			<!--
+			<import file="${build.dir}/macros/fla.xml"/>
+			-->
+			
+			<!--
+			<echo message="${file}"/>
+			-->
+			
+		</sequential>
+		
+	</macrodef>
+</project>
+
+
+
+
+
+

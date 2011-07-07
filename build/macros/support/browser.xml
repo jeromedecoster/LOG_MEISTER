@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="support-browser">
+	
+	<!--
+	
+	Required in parent build file :
+	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${basedir}/build/libs/ant-contrib-1.0b3.jar"/>
+	
+	Property ${targetos}
+	
+	-->
+	
+	<macrodef name="support-browser">
+		
+		<!-- required attributes -->
+		<attribute name="file" default=""/>
+		
+		<!-- optional attributes -->
+		<attribute name="browser" default="firefox"/>
+		
+		<sequential>
+			
+			<!-- check attributes -->
+			<if>
+				<equals arg1="@{file}" arg2="" />
+				<then>
+					<fail message="Attribute 'file' required" />
+				</then>
+			</if>
+			
+			<!-- set var ${exec} to 'firefox' or 'google chrome' -->
+			<if>
+				<equals arg1="@{browser}" arg2="firefox" />
+				<then>
+					<var name="exec" value="firefox"/>
+				</then>
+				<else>
+					<if>
+						<equals arg1="@{browser}" arg2="chrome" />
+						<then>
+							<var name="exec" value="google chrome"/>
+						</then>
+						<else>
+							<fail message="Attribute 'browser' must be 'firefox' or 'chrome'" />
+						</else>
+					</if>
+				</else>
+			</if>
+			
+			
+			<!-- convert the file URI (slash or backslash) -->
+			<path id="file">
+				<pathelement location="@{file}"/>
+			</path>
+			<pathconvert targetos="${targetos}" property="file" refid="file"/>
+			
+			<!--
+			<echo message="${file}"/>
+			<echo message="${exec}"/>
+			-->
+			
+			<if>
+				<equals arg1="${targetos}" arg2="unix" />
+				<then>
+					<exec executable="open">
+						<arg line="-a '${exec}' ${file}"/>
+					</exec>
+				</then>
+				<else>
+					<exec executable="cmd">
+					  <arg line="/c start '${exec}' ${file}"/>
+					</exec>
+				</else>
+			</if>
+
+		</sequential>
+	</macrodef>
+	
+</project>
+
+
+
+
+
+

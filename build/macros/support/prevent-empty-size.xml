@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="support-prevent-empty-size">
+	
+	<!--
+	
+	Required in parent build file :
+	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${basedir}/build/libs/ant-contrib-1.0b3.jar"/>
+	
+	Variable ${width} ${height}
+	
+	-->
+	
+	<macrodef name="support-prevent-empty-size">
+		
+		<!-- required attributes -->
+		<attribute name="width"		default="550"/>
+		<attribute name="height"	default="400"/>
+		
+		<sequential>
+			
+			<if>
+				<equals arg1="${width}" arg2=""/>
+				<then>
+					<var name="width" value="@{width}"/>
+				</then>
+			</if>
+	
+			<if>
+				<equals arg1="${height}" arg2=""/>
+				<then>
+					<var name="height" value="@{height}"/>
+				</then>
+			</if>
+			
+		</sequential>
+	</macrodef>
+	
+</project>
+
+
+
+
+
+

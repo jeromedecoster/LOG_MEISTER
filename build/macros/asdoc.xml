@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="macro-asdoc">
+	
+	<!--
+	
+	Required in parent build file :
+	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${basedir}/build/libs/ant-contrib-1.0b3.jar"/>
+	
+	-->
+	
+	<macrodef name="macro-asdoc">
+		
+		<!-- required attributes -->
+		<attribute name="classes"	default=""/>
+		<attribute name="source"	default=""/>
+		<attribute name="output"	default=""/>
+		
+		<!-- optional attributes -->
+		<attribute name="title"		default=""/>
+		<attribute name="footer"	default=""/>
+		<!--
+		les valeurs doivent etre espace par des virgules
+		external-library-path="ici.swc,la.swc"
+		-->
+		<attribute name="external-library"		default=""/>
+		<attribute name="exclude-dependencies"	default="true"/>
+		
+		<sequential>
+			
+			<!-- check attributes -->
+			<support-fail-if-empty var="@{classes}"	message="Attribute 'classes' required"/>
+			<support-fail-if-empty var="@{source}"	message="Attribute 'source' required"/>
+			<support-fail-if-empty var="@{output}"	message="Attribute 'output' required"/>
+			
+			<!-- @{exclude-dependencies} must be 'true' or 'false', default true -->
+			<var name="exclude-dependencies" value="@{exclude-dependencies}"/>
+			<if>
+				<or>
+					<equals arg1="@{exclude-dependencies}" arg2="true" />
+					<equals arg1="@{exclude-dependencies}" arg2="false" />
+				</or>
+				<else>
+					<var name="exclude-dependencies" value="true"/>
+				</else>
+			</if>
+			
+			<var name="line" value=" "/>
+			
+			<!-- concat line if -->
+			<support-concat-line var="@{title}"				concat="-main-title '@{title}' -window-title '@{title}'"/>
+			<support-concat-line var="@{footer}"			concat="-footer '@{footer}'"/>
+			<support-concat-line var="@{external-library}"	concat="-external-library-path+=@{external-library}"/>
+			
+			<!-- concat line -->
+			<var name="line" value="${line} -doc-classes @{classes}"/>
+			<var name="line" value="${line} -source-path @{source}"/>
+			<var name="line" value="${line} -exclude-dependencies=${exclude-dependencies}"/>
+			<var name="line" value="${line} -output @{output}"/>
+			<var name="line" value="${line} -warnings=false"/>
+			
+			<!--
+			<echo>line:${line}</echo>
+			-->
+			
+			<java jar="${flex.asdoc.jar}" dir="${flex.dir}/frameworks" fork="true" failonerror="true">
+		        <arg line="${line}"/>
+			</java>
+			
+		</sequential>
+	</macrodef>
+	
+</project>
+
+<!--
+	options
+	
+	-output <filename>
+			alias -o
+			the filename of the SWF movie to create
+	
+	-include-sources [path-element] [...]
+			alias -is
+			a list of directories and source files to include in the output SWC
+			(repeatable)
+	
+	-compiler.external-library-path [path-element] [...]
+			alias -el
+			list of SWC files or directories to compile against but to omit from
+			linking (repeatable)
+	
+	-static-link-runtime-shared-libraries
+			alias -static-rsls
+			statically link the libraries specified by the
+			-runtime-shared-libraries-path option.
+	
+	-compiler.verbose-stacktraces
+			alias -verbose-stacktraces
+			save callstack information to the SWF for debugging (advanced)
+	
+	-compiler.headless-server
+			alias -headless-server
+			a flag to set when Flex is running on a server without a display
+			(advanced)
+	
+	-compiler.library-path [path-element] [...]
+			alias -library-path
+			list of SWC files or directories that contain SWC files (repeatable)
+	
+	-link-report <filename>
+			Output a XML-formatted report of all definitions linked into the
+			application. (advanced)
+	
+-->
+
+
+
+
+
+

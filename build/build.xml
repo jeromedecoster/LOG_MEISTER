@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="log-meister" basedir="../">
+	
+	<import file="${basedir}/build/macros/support/initialize.xml"/>
+	<support-initialize/>
+	
+	
+	<!-- System environment must contain FLEX_HOME variable that points to Flex SDK -->
+	<property name="FLEX_HOME" location="${flex.dir}" />
+	
+	
+	
+	<!-- 
+	
+	AS
+	
+	-->
+	
+	<target name="demo-base-compile">
+		
+		<macro-swf	with="mxmlc"
+					debug="true"
+					class="${src.dir}/demo/DemoBase.as"
+					source="${src.dir}"
+					library="${minimalcomps.swc},${monster.swc}"
+					external-library=""
+					metadata=""
+					width="800"
+					height="600"
+					reset="false"
+					optimize="false"
+					load-externs=""
+					clean-report=""
+					report=""
+					output="${bin.dir}/demo_base.swf"/>
+		
+		<antcall target="demo-base-launch"/>
+	</target>
+	
+	<target name="demo-base-launch">
+		<macro-launch with="firefox" file="${bin.dir}/demo_base.html"/>
+	</target>
+	
+	
+	<target name="demo-config-compile">
+		
+		<macro-swf	with="mxmlc"
+					debug="true"
+					class="${src.dir}/demo/DemoConfig.as"
+					source="${src.dir}"
+					library="${minimalcomps.swc},${monster.swc}"
+					external-library=""
+					metadata=""
+					width="800"
+					height="600"
+					reset="false"
+					optimize="false"
+					load-externs=""
+					clean-report=""
+					report=""
+					output="${bin.dir}/demo_config.swf"/>
+		
+			<antcall target="demo-config-launch"/>
+		</target>
+		
+		<target name="demo-config-launch">
+			<macro-launch with="fdt" width="800" height="500" flashvars="test=13&amp;a=12" file="${bin.dir}/demo_config.swf"/>
+			<!--
+			<macro-launch with="firefox" file="${bin.dir}/demo_config.html"/>
+			-->
+		</target>
+	
+	
+	
+		
+	<target name="aaa">
+		
+		<!--
+		<macro-swf	with="fdt"
+							debug="true"
+							class="${src.dir}/demo/DemoBase.as"
+							source="${src.dir}"
+							library="${minimalcomps.swc},${monster.swc}"
+							external-library=""
+							metadata=""
+							width=""
+							height="220"
+							reset="false"
+							optimize="false"
+							load-externs=""
+							clean-report="true"
+							report="${bin.dir}/base4-report.xml"
+							output="${bin.dir}/demo_base4.swf"/>
+		
+		<fileset id="classes" dir="${src.dir}/">
+			<include name="com/jeromedecoster/**/*.as"/>
+		</fileset>
+		
+		<pathconvert property="classes" pathsep=" " refid="classes">
+			<chainedmapper>
+				<regexpmapper	from="${src.dir}/(.*)" to="\1"/>
+				<packagemapper	from="*.as" to="*"/>
+			</chainedmapper>
+		</pathconvert>
+		
+		
+		<macro-asdoc	classes="${classes}"
+						source="${src.dir}"
+						external-library="${font.swc},${monster.swc}"
+						title="LogMeister"
+						footer="LogMeister"
+						output="${basedir}/usr/asdoc/"
+						/>
+		
+		
+		
+		<echo>${classes}</echo>
+		<macro-launch with="chrome" width="800" height="500" flashvars="test=13&amp;a=12" file="${bin.dir}/demo_config.html"/>
+		<macro-swf	with="fdt"
+					debug="true"
+					class="${src.dir}/demo/DemoBase.as"
+					source="${src.dir}"
+					library="${font.swc},${monster.swc}"
+					external-library=""
+					metadata=""
+					width=""
+					height="220"
+					reset="false"
+					optimize="false"
+					load-externs="${bin.dir}/base4-exc.xml"
+					clean-report="true"
+					report="${bin.dir}/base4-report.xml"
+					output="${bin.dir}/demo_base4.swf"/>
+		
+		<fileset id="sources" dir="${src.dir}/">
+			<include name="com/jeromedecoster/**/*.as"/>
+		</fileset>
+					
+		<pathconvert property="include-sources" pathsep="," refid="sources">
+			<identitymapper/>
+		</pathconvert>
+		<echo>${include-sources}</echo>
+		-->
+		<!-- create SWC with report 
+				<macro-swc 
+					with="fdt"
+					debug="false"
+					output="${basedir}/libs/test.swc"
+						sources="${include-sources}"
+					library=""
+					external-library="${monster.swc}"
+					clean-report="true"
+						report="${basedir}/libs/report.xml"
+				/>
+		-->
+		
+		<!-- 
+		
+						library-path="${libs.dir}/font.swc"
+		
+		<macro-compile with="mxmlc"
+						debug="false"
+							 class="${src.dir}/demo/DemoBase.as"
+							 source="${src.dir}"
+							 library="${monster.swc},${font.swc},${as3corelib.swc}"
+							 external-library=""
+							 metadata=""
+							 width=""
+							 height="220"
+			reset="false"
+			optimize="false"
+			load-externs=""
+							 output="${bin.dir}/demo_base4.swf"/>
+		
+		<macro-launch with="firefox" width="800" height="500" flashvars="test=13&amp;a=12" file="${bin.dir}/demo_config.html"/>
+		
+							 report="${bin.dir}/report2.xml"
+							clean-report="true"
+		<macro-debug with="fdt"
+							 class="${src.dir}/demo/DemoBase.as"
+							 source="${src.dir}"
+							 library="${monster.swc},${font.swc},${as3corelib.swc}"
+							 external-library=""
+							 metadata=""
+							 width=""
+							 height="200"
+							 output="${bin.dir}/demo_base2.swf"/>
+		
+		<pathconvert targetos="${targetos}" property="projectname">
+			<path path="${basedir}"/>
+			<mapper>
+				<flattenmapper/>
+			</mapper>
+		</pathconvert>
+
+		<fdt.loadProjectProperties projectpath="${basedir}" projectname="${projectname}" />
+		<fdt.launch.resetFlexCompiler/>
+		<fdt.launch.application debug="true" projectname="${projectname}" target="${bin.dir}/demo_base2.swf"
+			mainclass="${src.dir}/demo/DemoBase.as"
+			compilerarguments="-external-library-path+=${monster.swc},${font.swc},${as3corelib.swc} -source-path=${src.dir} -actionscript-file-encoding=UTF-8"
+			autoaddswcs="false"
+			autoaddclasspath="false"
+		/>
+		<echo message="${basedir}" />
+		<echo message="${FDTProject}" />
+		<echo message="${file}" />
+		<fdt.loadProjectProperties projectpath="${basedir}"/>
+		<fdt.launch.application debug="true" />
+		<macro-debug with="mxmlc"
+					 class="${src.dir}/demo/DemoBase.as"
+					 source="${src.dir}"
+					 library="${monster.swc},${font.swc},${as3corelib.swc}"
+					 external-library=""
+					 metadata=""
+					 output="${bin.dir}/demo_base2.swf"/>
+			library="${monster.swc},${font.swc},${as3corelib.swc}"
+		<macro-fail-if-not-listed var="joe" list="bob, gerard, jooe, jim" message="erreur"/>
+		<macro-launch launcher="fdt" width="" height="500" flashvars="test=13&amp;a=12" file="${bin.dir}/demo_config.html"/>
+		-->
+	</target>
+	
+	
+	
+	
+	
+	<!-- 
+	
+	ASDOC
+		 depends="swc-create"
+					<packagemapper	from="*.as" to="*"/>
+					<identitymapper/>
+	-->
+	
+	<target name="asdoc-create" >
+			
+		<fileset id="sources" dir="${src.dir}/">
+			<include name="com/jeromedecoster/**/*.as"/>
+		</fileset>
+		
+		<!-- convert the ${src.dir} URI to unix (slash) to prevent regex parsing error -->
+		<path id="temp-src.dir">
+			<pathelement location="${src.dir}"/>
+		</path>
+		<pathconvert targetos="unix" property="temp-src.dir" refid="temp-src.dir"/>
+		
+		<!--
+		convert the filset (remove parent folders, remove .as extension, replace / with .) like:
+		com.jeromedecoster.logging.debug,com.jeromedecoster.logging.error
+		-->
+		<pathconvert property="sources" pathsep="," refid="sources">
+			<chainedmapper>
+				<filtermapper>
+					<replacestring from="\" to="/"/>
+				</filtermapper>
+				<regexpmapper from="${temp-src.dir}/(.*).as" to="\1"/>
+				<filtermapper>
+					<replacestring from="/" to="."/>
+				</filtermapper>
+			</chainedmapper>
+		</pathconvert>
+		
+		<!--
+		then convert the long string ${sources}: com.jeromedecoster.logging.debug,com.jeromedecoster.logging.error
+		to ${classes}: com.jeromedecoster.logging.debug com.jeromedecoster.logging.error
+		-->
+		<propertyregex property="classes"
+		              input="${sources}"
+		              regexp=","
+		              replace=" "
+		              casesensitive="false" />
+		
+		<!--
+		<echo>sources:${sources}</echo>
+		<echo>classes:${classes}</echo>
+		-->
+		
+		<macro-asdoc	classes="${classes}"
+						source="${src.dir}"
+						external-library="${project.swc}"
+						title="LogMeister"
+						footer="LogMeister"
+						output="${asdoc.dir}"
+						/>
+		
+		<antcall target="asdoc-launch"/>
+		
+	</target>
+	
+	<target name="asdoc-launch">
+		<macro-launch with="firefox" file="${asdoc.dir}/index.html"/>
+	</target>
+	
+	
+	<!-- 
+	
+	SWC
+		
+	-->
+	
+	<target name="swc-create">
+		
+		<fileset id="sources" dir="${src.dir}/">
+			<include name="com/jeromedecoster/**/*.as"/>
+		</fileset>
+					
+		<pathconvert property="sources" pathsep="," refid="sources">
+			<identitymapper/>
+		</pathconvert>
+		
+		<echo>sources:${sources}</echo>
+		<!--
+		<fail/>
+		-->
+		<!-- create SWC with report -->
+		<macro-swc 	with="compc"
+					debug="true"
+					output="${project.swc}"
+					sources="${sources}"
+					library="${monster.swc}"
+					external-library=""
+					clean-report="true"
+					report="${basedir}/libs/report.xml"
+		         simple="true"
+					/>
+			
+	</target>
+	
+	<!--
+	<target name="test-jruby">
+		<java jar="${basedir}/build/libs/jruby-complete-1.5.6.jar" fork="true">
+			<arg line="-S rake -f rakefile.rb test2"/>
+		</java>
+	</target>
+	-->
+	
+	<!--
+	<target name="rake-test">
+		<echo>${basedir}</echo>
+	    <exec executable="rake" failonerror="true">
+	    	<arg value="report=libs/report.xml" />
+	        <arg value="create_load_externs" />
+	    </exec>
+	</target>
+	-->
+	
+</project>
+
+
+
+
+
+
