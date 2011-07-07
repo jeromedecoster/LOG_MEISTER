@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AS3Classpath>
+<AS3LibraryFolder>libs</AS3LibraryFolder>
+<AS3Classpath generateProblems="false" sdkBased="true" type="lib" useAsSharedCode="false">frameworks/libs/player/{playerVersion}/playerglobal.swc</AS3Classpath>
+<AS3Classpath generateProblems="false" sdkBased="true" type="lib" useAsSharedCode="false">frameworks/libs/flex.swc</AS3Classpath>
+<AS3Classpath generateProblems="true" sdkBased="false" type="source" useAsSharedCode="false">src</AS3Classpath>
+<AS3Classpath generateProblems="false" sdkBased="false" type="lib" useAsSharedCode="false">libs/as3corelib-v2009-11-19-extract.swc</AS3Classpath>
+<AS3Classpath generateProblems="false" sdkBased="false" type="lib" useAsSharedCode="false">libs/font.swc</AS3Classpath>
+<AS3Classpath generateProblems="false" sdkBased="false" type="lib" useAsSharedCode="false">libs/monster-debugger-v3.01.swc</AS3Classpath>
+</AS3Classpath>
